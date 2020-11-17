@@ -2,10 +2,12 @@
 const path = require('path')
 
 module.exports = {
-  publicPath: './',
+  publicPath: '',
   filenameHashing: false,
+
   // 生产环境是否生成 sourceMap 文件
   productionSourceMap: false,
+
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
@@ -13,6 +15,7 @@ module.exports = {
       // 为开发环境修改配置...
     }
   },
+
   chainWebpack: config => {
     const svgRule = config.module.rule('svg')
     // 清除已有的所有 loader。
@@ -35,5 +38,18 @@ module.exports = {
       .end()
       .use('file-loader')
       .loader('file-loader')
+  },
+
+  devServer: {
+    proxy: {
+      '/proxyApi': {
+        target: 'http://demo.open.renren.io/renren-fast-server',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/proxyApi': '/'
+        }
+      }
+    }
   }
 }
