@@ -10,12 +10,6 @@
  * 注意:
  *  1. 通过2-2 添加icons, getNameList方法无法返回对应数据
  */
-import Vue from 'vue'
-import IconSvg from '@/components/icon-svg'
-import './iconfont.js'
-
-Vue.component('IconSvg', IconSvg)
-
 const svgFiles = require.context('./svg', true, /\.svg$/)
 const iconList = svgFiles.keys().map(item => svgFiles(item))
 

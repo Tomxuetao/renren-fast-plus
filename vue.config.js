@@ -47,7 +47,7 @@ module.exports = {
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          '^/proxyApi': '/'
+          '^/proxyApi': ''
         }
       }
     }

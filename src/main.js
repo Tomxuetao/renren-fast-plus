@@ -3,8 +3,11 @@ import http from '@/utils/http'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import elementUI from 'element-plus'
+import ElementUI from 'element-plus'
 import '@/element-ui-theme'
 import '@/assets/scss/index.scss'
+import '@/icons'
 
-createApp(App).use(store).use(router).use(http).use(elementUI).mount('#app')
+import CustomComp from '@/components/index'
+
+createApp(App).use(store).use(router).use(http).use(ElementUI).use(CustomComp).mount('#app')

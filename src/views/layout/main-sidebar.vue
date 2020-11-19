@@ -8,22 +8,10 @@
         class="site-sidebar__menu">
         <el-menu-item index="home" @click="$router.push({ name: 'home' })">
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
-          <span>首页</span>
-        </el-menu-item>
-        <el-submenu index="demo">
           <template v-slot:title>
-            <icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>
-            <span>demo</span>
+            <span>首页</span>
           </template>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'demo-echarts' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span>echarts</span>
-          </el-menu-item>
-          <el-menu-item index="demo-ueditor" @click="$router.push({ name: 'demo-ueditor' })">
-            <icon-svg name="editor" class="site-sidebar__menu-icon"></icon-svg>
-            <span>ueditor</span>
-          </el-menu-item>
-        </el-submenu>
+        </el-menu-item>
         <sub-menu
           v-for="menu in menuList"
           :key="menu.menuId"
@@ -38,56 +26,67 @@
 <script>
 import SubMenu from './main-sidebar-sub-menu'
 import { isURL } from '@/utils'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { computed, reactive, watch } from 'vue'
+
 export default {
-  data () {
-    return {
-      dynamicMenuRoutes: []
-    }
-  },
   components: {
     SubMenu
   },
-  computed: {
-    sidebarLayoutSkin: {
-      get () { return this.$store.state.common.sidebarLayoutSkin }
-    },
-    sidebarFold: {
-      get () { return this.$store.state.common.sidebarFold }
-    },
-    menuList: {
-      get () { return this.$store.state.common.menuList },
-      set (val) { this.$store.commit('common/updateMenuList', val) }
-    },
-    menuActiveName: {
-      get () { return this.$store.state.common.menuActiveName },
-      set (val) { this.$store.commit('common/updateMenuActiveName', val) }
-    },
-    mainTabs: {
-      get () { return this.$store.state.common.mainTabs },
-      set (val) { this.$store.commit('common/updateMainTabs', val) }
-    },
-    mainTabsActiveName: {
-      get () { return this.$store.state.common.mainTabsActiveName },
-      set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
-    }
-  },
-  watch: {
-    $route: 'routeHandle'
-  },
-  created () {
-    this.menuList = JSON.parse(sessionStorage.getItem('menuList') || '[]')
-    this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
-    this.routeHandle(this.$route)
-  },
-  methods: {
-    // 路由操作
-    routeHandle (route) {
+  setup () {
+    const route = useRoute()
+
+    const store = useStore()
+
+    const dynamicMenuRoutes = reactive([])
+
+    const sidebarLayoutSkin = computed(() => {
+      return store.state.common.sidebarLayoutSkin
+    })
+
+    const sidebarFold = computed(() => {
+      return store.state.common.sidebarFold
+    })
+
+    const menuList = computed({
+      get: () => {
+        return store.state.common.menuList
+      },
+      set: value => {
+        store.commit('common/updateMenuList', value)
+      }
+    })
+
+    const menuActiveName = computed({
+      get: () => {
+        return store.state.common.menuActiveName
+      },
+      set: value => {
+        store.commit('common/updateMenuActiveName', value)
+      }
+    })
+
+    const mainTabs = computed({
+      get: () => { return store.state.common.mainTabs },
+      set: value => { store.commit('common/updateMainTabs', value) }
+    })
+
+    const mainTabsActiveName = computed({
+      get: () => { return store.state.common.mainTabsActiveName },
+      set: value => { store.commit('common/updateMainTabsActiveName', value) }
+    })
+
+    menuList.value = JSON.parse(sessionStorage.getItem('menuList') || '[]')
+    dynamicMenuRoutes.value = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
+
+    const routeHandle = route => {
       if (route.meta.isTab) {
         // tab选中, 不存在先添加
-        var tab = this.mainTabs.filter(item => item.name === route.name)[0]
+        let tab = mainTabs.value.find(item => item.name === route.name)
         if (!tab) {
           if (route.meta.isDynamic) {
-            route = this.dynamicMenuRoutes.filter(item => item.name === route.name)[0]
+            route = dynamicMenuRoutes.value.find(item => item.name === route.name)
             if (!route) {
               return console.error('未能找到可用标签页!')
             }
@@ -101,11 +100,27 @@ export default {
             params: route.params,
             query: route.query
           }
-          this.mainTabs = this.mainTabs.concat(tab)
+          mainTabs.value = mainTabs.value.concat(tab)
         }
-        this.menuActiveName = tab.menuId + ''
-        this.mainTabsActiveName = tab.name
+        menuActiveName.value = tab.menuId + ''
+        mainTabsActiveName.value = tab.name
       }
+    }
+
+    routeHandle(route)
+
+    watch(() => route, value => {
+      routeHandle(value)
+    })
+
+    return {
+      dynamicMenuRoutes,
+      sidebarLayoutSkin,
+      sidebarFold,
+      menuList,
+      menuActiveName,
+      mainTabs,
+      mainTabsActiveName
     }
   }
 }

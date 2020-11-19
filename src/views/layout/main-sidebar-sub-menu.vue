@@ -22,6 +22,9 @@
 
 <script>
 import SubMenu from './main-sidebar-sub-menu'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 export default {
   name: 'sub-menu',
   props: {
@@ -37,18 +40,25 @@ export default {
   components: {
     SubMenu
   },
-  computed: {
-    sidebarLayoutSkin: {
-      get () { return this.$store.state.common.sidebarLayoutSkin }
-    }
-  },
-  methods: {
-    // 通过menuId与动态(菜单)路由进行匹配跳转至指定路由
-    gotoRouteHandle (menu) {
-      var route = this.dynamicMenuRoutes.filter(item => item.meta.menuId === menu.menuId)
-      if (route.length >= 1) {
-        this.$router.push({ name: route[0].name })
+
+  setup (props) {
+    const store = useStore()
+    const router = useRouter()
+
+    const sidebarLayoutSkin = computed(() => {
+      return store.state.common.sidebarLayoutSkin
+    })
+
+    const gotoRouteHandle = menu => {
+      const route = props.dynamicMenuRoutes.value.find(item => item.meta.menuId === menu.menuId)
+      if (route) {
+        router.push({ name: route.name })
       }
+    }
+
+    return {
+      sidebarLayoutSkin,
+      gotoRouteHandle
     }
   }
 }

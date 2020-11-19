@@ -9,7 +9,7 @@
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" status-icon>
-            <el-form-item prop="userName">
+            <el-form-item prop="username">
               <el-input v-model="dataForm.username" placeholder="帐号"></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -41,13 +41,15 @@ import { getUUID } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, getCurrentInstance } from 'vue'
 
 export default {
   name: 'login',
   setup () {
     const http = useHttp()
     const router = useRouter()
+    const { ctx } = getCurrentInstance()
+
     const dataForm = reactive({
       username: '',
       password: '',
@@ -66,13 +68,13 @@ export default {
       ]
     })
 
-    let captchaPath = ref('')
+    const captchaPath = ref('')
 
     const dataFormRef = ref(null)
 
     const getCaptcha = () => {
       dataForm.uuid = getUUID()
-      captchaPath = http.adornUrl(`/captcha.jpg?uuid=${dataForm.uuid}`)
+      captchaPath.value = http.adornUrl(`/captcha.jpg?uuid=${dataForm.uuid}`)
     }
     getCaptcha()
 
@@ -83,23 +85,21 @@ export default {
             url: http.adornUrl('/sys/login'),
             method: 'post',
             data: http.adornData(dataForm)
-          }).then(({ code, token }) => {
-            debugger
+          }).then(({ code, token, msg }) => {
             if (code === 0) {
               sessionStorage.setItem('token', token)
               router.replace({ name: 'home' })
             } else {
+              ctx.$message({
+                message: msg,
+                type: 'error'
+              })
               getCaptcha()
-              // message.error(data.msg)
             }
           })
         }
       })
     }
-
-    onMounted(() => {
-      console.log(dataFormRef.value)
-    })
 
     return {
       dataForm,
