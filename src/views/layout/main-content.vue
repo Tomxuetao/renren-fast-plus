@@ -1,21 +1,18 @@
 <template>
   <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
-    <el-tabs
-      v-if="$route.meta.isTab"
-      v-model="mainTabsActiveName"
-      :closable="true"
-      @tab-click="selectedTabHandle"
-      @tab-remove="removeTabHandle">
-      <el-dropdown class="site-tabs__tools" :show-timeout="0">
-        <i class="el-icon-arrow-down el-icon--right"></i>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="tabsCloseCurrentHandle">关闭当前标签页</el-dropdown-item>
-          <el-dropdown-item @click="tabsCloseOtherHandle">关闭其它标签页</el-dropdown-item>
-          <el-dropdown-item @click="tabsCloseAllHandle">关闭全部标签页</el-dropdown-item>
-          <el-dropdown-item @click="refreshHandle()">刷新当前标签页</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle" @tab-remove="removeTabHandle">
+<!--      <el-dropdown class="site-tabs__tools" :show-timeout="0" :tabindex="0" placement="bottom-end">-->
+<!--        <el-icon name="arrow-down" class="el-icon&#45;&#45;right"></el-icon>-->
+<!--        <template v-slot:dropdown>-->
+<!--          <el-dropdown-menu>-->
+<!--            <el-dropdown-item @click="tabsCloseCurrentHandle">关闭当前标签页</el-dropdown-item>-->
+<!--            <el-dropdown-item @click="tabsCloseOtherHandle">关闭其它标签页</el-dropdown-item>-->
+<!--            <el-dropdown-item @click="tabsCloseAllHandle">关闭全部标签页</el-dropdown-item>-->
+<!--            <el-dropdown-item @click="refreshHandle()">刷新当前标签页</el-dropdown-item>-->
+<!--          </el-dropdown-menu>-->
+<!--        </template>-->
+<!--      </el-dropdown>-->
       <el-tab-pane
         v-for="item in mainTabs"
         :key="item.name"
@@ -76,6 +73,9 @@ export default {
       }
     })
 
+    console.log(mainTabs.value)
+    console.log(router.getRoutes())
+
     const mainTabsActiveName = computed({
       get: () => {
         return store.state.common.mainTabsActiveName
@@ -98,6 +98,7 @@ export default {
 
     /** methods **/
     const refreshHandle = inject('refreshHandle')
+
     const selectedTabHandle = (tab) => {
       tab = mainTabs.value.filter(item => item.name === tab.name)
       if (tab.length >= 1) {

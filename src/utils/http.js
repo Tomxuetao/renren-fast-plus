@@ -30,7 +30,7 @@ export function createHttp () {
     const data = response.data
     if (data && data.code === 401) {
       // 401, token失效
-      router.push({ name: 'login' })
+      router.push({ name: 'login' }).then(() => {})
     }
     return data
   }, error => {

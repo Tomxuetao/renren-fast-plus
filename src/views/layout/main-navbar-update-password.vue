@@ -1,9 +1,9 @@
 <template>
-  <el-dialog title="修改密码" :model-value="visible" :append-to-body="false" width="30%">
+  <el-dialog title="修改密码" v-model="visible" :append-to-body="false" width="30%">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
-<!--      <el-form-item label="账号">-->
-<!--        <span>{{ userName }}</span>-->
-<!--      </el-form-item>-->
+      <el-form-item label="账号">
+        <span>{{ userName }}</span>
+      </el-form-item>
       <el-form-item label="原密码" prop="password">
         <el-input type="password" v-model="dataForm.password"></el-input>
       </el-form-item>
@@ -80,7 +80,6 @@ export default {
     }
 
     const dataFormSubmit = () => {
-      console.log(dataFormRef.value)
       dataFormRef.value.validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -92,7 +91,6 @@ export default {
               newPassword: dataForm.newPassword
             })
           }).then(({ code, msg }) => {
-            debugger
             if (code === 0) {
               ctx.$message({
                 message: '操作成功',

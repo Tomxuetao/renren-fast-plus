@@ -148,6 +148,10 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   } else {
     mainRoutes.name = 'main-dynamic'
     mainRoutes.children = routes
+    console.log(routes)
+    routes.forEach(item => {
+      router.addRoute('main', item)
+    })
     sessionStorage.setItem('dynamicMenuRoutes', JSON.stringify(mainRoutes.children || '[]'))
     console.log('\n')
     console.log('%c!<-------------------- 动态(菜单)路由 s -------------------->', 'color:blue')

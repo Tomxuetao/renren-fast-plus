@@ -3,6 +3,7 @@
 *:after {
   box-sizing: border-box;
 }
+
 body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   font-size: 14px;
@@ -150,6 +151,7 @@ img {
         color: #fff;
       }
     }
+
     .el-menu--popup-bottom-start {
       background-color: $navbar--background-color;
     }
@@ -213,6 +215,10 @@ img {
     margin-left: 230px;
     padding-right: 15px;
     background-color: #fff;
+
+    > .el-menu--horizontal {
+      border-bottom: 0!important;
+    }
   }
   &__menu {
     float: left;

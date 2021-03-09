@@ -8,8 +8,8 @@
         class="site-sidebar__menu">
         <el-menu-item index="home" @click="$router.push({ name: 'home' })">
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
-          <template v-slot:title>
-            <span>首页</span>
+          <template #title>
+            首页
           </template>
         </el-menu-item>
         <sub-menu
@@ -80,14 +80,14 @@ export default {
     menuList.value = JSON.parse(sessionStorage.getItem('menuList') || '[]')
     dynamicMenuRoutes.value = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
 
-    const routeHandle = route => {
+    const routeHandle = routeName => {
       if (route.meta.isTab) {
         // tab选中, 不存在先添加
-        let tab = mainTabs.value.find(item => item.name === route.name)
+        let tab = mainTabs.value.find(item => item.name === routeName)
         if (!tab) {
           if (route.meta.isDynamic) {
-            route = dynamicMenuRoutes.value.find(item => item.name === route.name)
-            if (!route) {
+            const temp = dynamicMenuRoutes.value.find(item => item.name === routeName)
+            if (!temp) {
               return console.error('未能找到可用标签页!')
             }
           }
@@ -101,15 +101,16 @@ export default {
             query: route.query
           }
           mainTabs.value = mainTabs.value.concat(tab)
+          console.log(mainTabs.value)
         }
         menuActiveName.value = tab.menuId + ''
         mainTabsActiveName.value = tab.name
       }
     }
 
-    routeHandle(route)
+    routeHandle(route.name)
 
-    watch(() => route, value => {
+    watch(() => route.name, value => {
       routeHandle(value)
     })
 

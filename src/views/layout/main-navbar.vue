@@ -36,9 +36,10 @@
           <el-menu-item index="2-3"><a href="https://gitee.com/renrenio/renren-generator" target="_blank">代码生成器</a></el-menu-item>
         </el-submenu>
         <el-menu-item class="site-navbar__avatar" index="3">
-          <el-dropdown :show-timeout="0" :tabindex="0" trigger="click" placement="bottom-start">
+          <el-dropdown :show-timeout="0" :tabindex="0" placement="bottom">
             <div class="el-dropdown-link">
-              <img src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}
+              <img src="~@/assets/img/avatar.png" :alt="userName">
+              <span>{{ userName }}</span>
             </div>
             <template v-slot:dropdown>
               <el-dropdown-menu>
