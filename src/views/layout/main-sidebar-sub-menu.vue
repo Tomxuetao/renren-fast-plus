@@ -52,6 +52,7 @@ export default {
     const gotoRouteHandle = menu => {
       const route = props.dynamicMenuRoutes.value.find(item => item.meta.menuId === menu.menuId)
       if (route) {
+        debugger
         router.push({ name: route.name })
       }
     }
